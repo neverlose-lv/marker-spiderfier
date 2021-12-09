@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { InfoWindowManager, MarkerManager } from '@agm/core';
-import { Marker } from '@agm/core';
+import { AgmMarker as Marker } from '@agm/core';
 import { SpiderManager } from '../services/managers/spider-manager';
 
 import {
