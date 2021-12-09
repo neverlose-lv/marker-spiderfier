@@ -11,8 +11,9 @@ import {
 } from '@angular/core';
 
 import { InfoWindowManager, MarkerManager } from '@agm/core';
-import { AgmMarker as Marker } from '@agm/core';
 import { SpiderManager } from '../services/managers/spider-manager';
+
+declare type Marker = {};
 
 import {
   FormatEvent,

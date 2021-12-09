@@ -1,4 +1,4 @@
-import { AgmMarker as Marker } from '@agm/core';
+declare type Marker = {};
 import {
   LegColorOptions,
   SpiderOptions,
