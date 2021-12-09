@@ -11,7 +11,11 @@ export class SpiderManager extends MarkerManager {
   private _spiderInstance: Promise<MarkerSpiderInstance>;
   private _resolver: Function;
 
-  constructor(protected _mapsWrapper: GoogleMapsAPIWrapper, protected _zone: NgZone, @SkipSelf() protected _markerManager: MarkerManager) {
+  constructor(
+    protected _mapsWrapper: GoogleMapsAPIWrapper,
+    protected _zone: NgZone,
+    @SkipSelf() protected _markerManager: MarkerManager
+  ) {
     super(_mapsWrapper, _zone);
     this._spiderInstance = new Promise<MarkerSpiderInstance>((resolver) => {
       this._resolver = resolver;
@@ -23,7 +27,7 @@ export class SpiderManager extends MarkerManager {
   }
 
   init(options: SpiderOptions): void {
-    this._mapsWrapper.getNativeMap().then(map => {
+    this._mapsWrapper.getNativeMap().then((map) => {
       const spider = new OverlappingMarkerSpiderfier(map as any, options);
       this._resolver(spider);
     });
@@ -36,12 +40,11 @@ export class SpiderManager extends MarkerManager {
 
     this._markers.set(marker, markerPromise);
 
-    Promise.all([
-      this._spiderInstance,
-      markerPromise,
-    ]).then(([spider, nativeMarker]) => {
-      spider.addMarker(nativeMarker as any);
-    });
+    Promise.all([this._spiderInstance, markerPromise]).then(
+      ([spider, nativeMarker]) => {
+        spider.addMarker(nativeMarker as any);
+      }
+    );
   }
 
   deleteMarker(marker: AgmMarker): Promise<void> {
@@ -60,18 +63,20 @@ export class SpiderManager extends MarkerManager {
   }
 
   clearMarkers(): Promise<void> {
-    return this._spiderInstance.then(spider => {
+    return this._spiderInstance.then((spider) => {
       spider.removeAllMarkers();
 
       const markers = Array.from(this._markers.keys());
       this._markers.clear();
 
-      return Promise.all(markers.map(marker => this._markerManager.deleteMarker(marker))).then(() => { });
+      return Promise.all(
+        markers.map((marker) => this._markerManager.deleteMarker(marker))
+      ).then(() => {});
     });
   }
 
   setLegColors(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
+    this._spiderInstance.then((spider) => {
       if (c.legColors) {
         if (typeof c.legColors.usual === 'object') {
           Object.assign(spider.legColors.usual, c.legColors.usual);
@@ -85,84 +90,110 @@ export class SpiderManager extends MarkerManager {
   }
 
   setMarkersWontMove(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.markersWontMove = typeof c.markersWontMove !== 'undefined' ? c.markersWontMove : false;
+    this._spiderInstance.then((spider) => {
+      spider.markersWontMove =
+        typeof c.markersWontMove !== 'undefined' ? c.markersWontMove : false;
     });
   }
 
   setMarkersWontHide(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.markersWontHide = typeof c.markersWontHide !== 'undefined' ? c.markersWontHide : false;
+    this._spiderInstance.then((spider) => {
+      spider.markersWontHide =
+        typeof c.markersWontHide !== 'undefined' ? c.markersWontHide : false;
     });
   }
 
   setBasicFormatEvents(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.basicFormatEvents = typeof c.basicFormatEvents !== 'undefined' ? c.basicFormatEvents : false;
+    this._spiderInstance.then((spider) => {
+      spider.basicFormatEvents =
+        typeof c.basicFormatEvents !== 'undefined'
+          ? c.basicFormatEvents
+          : false;
     });
   }
 
   setKeepSpiderfied(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.keepSpiderfied = typeof c.keepSpiderfied !== 'undefined' ? c.keepSpiderfied : false;
+    this._spiderInstance.then((spider) => {
+      spider.keepSpiderfied =
+        typeof c.keepSpiderfied !== 'undefined' ? c.keepSpiderfied : false;
     });
   }
 
   setIgnoreMapClick(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.ignoreMapClick = typeof c.ignoreMapClick !== 'undefined' ? c.ignoreMapClick : false;
+    this._spiderInstance.then((spider) => {
+      spider.ignoreMapClick =
+        typeof c.ignoreMapClick !== 'undefined' ? c.ignoreMapClick : false;
     });
   }
 
   setNearbyDistance(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.nearbyDistance = typeof c.nearbyDistance === 'number' ? c.nearbyDistance : 20;
+    this._spiderInstance.then((spider) => {
+      spider.nearbyDistance =
+        typeof c.nearbyDistance === 'number' ? c.nearbyDistance : 20;
     });
   }
 
   setCircleSpiralSwitchover(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.circleSpiralSwitchover = typeof c.circleSpiralSwitchover === 'number' ? c.circleSpiralSwitchover : 9;
+    this._spiderInstance.then((spider) => {
+      spider.circleSpiralSwitchover =
+        typeof c.circleSpiralSwitchover === 'number'
+          ? c.circleSpiralSwitchover
+          : 9;
     });
   }
 
   setCircleFootSeparation(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.circleFootSeparation = typeof c.circleSpiralSwitchover === 'number' ? c.circleFootSeparation : 23;
+    this._spiderInstance.then((spider) => {
+      spider.circleFootSeparation =
+        typeof c.circleSpiralSwitchover === 'number'
+          ? c.circleFootSeparation
+          : 23;
     });
   }
 
   setCircleStartAngle(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.circleStartAngle = typeof c.circleSpiralSwitchover === 'number' ? c.circleStartAngle : Math.PI / 6;
+    this._spiderInstance.then((spider) => {
+      spider.circleStartAngle =
+        typeof c.circleSpiralSwitchover === 'number'
+          ? c.circleStartAngle
+          : Math.PI / 6;
     });
   }
 
   setSpiralFootSeparation(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.spiralFootSeparation = typeof c.circleSpiralSwitchover === 'number' ? c.spiralFootSeparation : 26;
+    this._spiderInstance.then((spider) => {
+      spider.spiralFootSeparation =
+        typeof c.circleSpiralSwitchover === 'number'
+          ? c.spiralFootSeparation
+          : 26;
     });
   }
 
   setSpiralLengthStart(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.spiralLengthStart = typeof c.circleSpiralSwitchover === 'number' ? c.spiralLengthStart : 11;
+    this._spiderInstance.then((spider) => {
+      spider.spiralLengthStart =
+        typeof c.circleSpiralSwitchover === 'number' ? c.spiralLengthStart : 11;
     });
   }
 
   setSpiralLengthFactor(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.spiralLengthFactor = typeof c.circleSpiralSwitchover === 'number' ? c.spiralLengthFactor : 4;
+    this._spiderInstance.then((spider) => {
+      spider.spiralLengthFactor =
+        typeof c.circleSpiralSwitchover === 'number' ? c.spiralLengthFactor : 4;
     });
   }
 
   setLegWeight(c: AgmMarkerSpider): void {
-    this._spiderInstance.then(spider => {
-      spider.legWeight = typeof c.circleSpiralSwitchover === 'number' ? c.legWeight : 1;
+    this._spiderInstance.then((spider) => {
+      spider.legWeight =
+        typeof c.circleSpiralSwitchover === 'number' ? c.legWeight : 1;
     });
   }
 
-  createEventObservable<T>(eventName: string, marker: AgmMarker): Observable<T> {
+  createEventObservable<T>(
+    eventName: string,
+    marker: AgmMarker
+  ): Observable<any> {
     // Override the default "click" event with "spider_click"
     if (eventName === 'click') {
       eventName = 'spider_click';
