@@ -11,10 +11,15 @@ import {
 } from '@angular/core';
 
 import { InfoWindowManager, MarkerManager } from '@agm/core';
-import { Marker } from '@agm/core/services/google-maps-types';
+import { Marker } from '@agm/core';
 import { SpiderManager } from '../services/managers/spider-manager';
 
-import { FormatEvent, LegColorOptions, SpiderfyEvent, SpiderOptions } from '../services/google-spider-types';
+import {
+  FormatEvent,
+  LegColorOptions,
+  SpiderfyEvent,
+  SpiderOptions,
+} from '../services/google-spider-types';
 
 /**
  * AgmMarkerSpider spiderfies map marker if they are near together
@@ -51,7 +56,9 @@ import { FormatEvent, LegColorOptions, SpiderfyEvent, SpiderOptions } from '../s
     InfoWindowManager,
   ],
 })
-export class AgmMarkerSpider implements OnDestroy, OnChanges, OnInit, SpiderOptions {
+export class AgmMarkerSpider
+  implements OnDestroy, OnChanges, OnInit, SpiderOptions
+{
   /**
    * The colors of the legs
    */
@@ -130,15 +137,16 @@ export class AgmMarkerSpider implements OnDestroy, OnChanges, OnInit, SpiderOpti
   /**
    * Triggers when markers are spiderfied (expanded)
    */
-  @Output() spiderfy: EventEmitter<SpiderfyEvent> = new EventEmitter<SpiderfyEvent>();
+  @Output() spiderfy: EventEmitter<SpiderfyEvent> =
+    new EventEmitter<SpiderfyEvent>();
 
   /**
    * Triggers when markers are unspiderfied (collapsed)
    */
-  @Output() unspiderfy: EventEmitter<SpiderfyEvent> = new EventEmitter<SpiderfyEvent>();
+  @Output() unspiderfy: EventEmitter<SpiderfyEvent> =
+    new EventEmitter<SpiderfyEvent>();
 
-  constructor(private _spiderManager: SpiderManager, private _ngZone: NgZone) {
-  }
+  constructor(private _spiderManager: SpiderManager, private _ngZone: NgZone) {}
 
   /** @internal */
   ngOnDestroy() {
@@ -209,22 +217,38 @@ export class AgmMarkerSpider implements OnDestroy, OnChanges, OnInit, SpiderOpti
       legWeight: this.legWeight,
     });
 
-    this._spiderManager.instance.then(spiderfier => {
-      spiderfier.addListener('format', (marker: Marker, status: string) => this._ngZone.run(() => this.format.emit({
-        marker,
-        status,
-        spiderfier,
-      })));
-      spiderfier.addListener('spiderfy', (changedMarkers: Marker[], unchangedMarkers: Marker[]) => this._ngZone.run(() => this.spiderfy.emit({
-        changedMarkers,
-        unchangedMarkers,
-        spiderfier,
-      })));
-      spiderfier.addListener('unspiderfy', (changedMarkers: Marker[], unchangedMarkers: Marker[]) => this._ngZone.run(() => this.unspiderfy.emit({
-        changedMarkers,
-        unchangedMarkers,
-        spiderfier,
-      })));
+    this._spiderManager.instance.then((spiderfier) => {
+      spiderfier.addListener('format', (marker: Marker, status: string) =>
+        this._ngZone.run(() =>
+          this.format.emit({
+            marker,
+            status,
+            spiderfier,
+          })
+        )
+      );
+      spiderfier.addListener(
+        'spiderfy',
+        (changedMarkers: Marker[], unchangedMarkers: Marker[]) =>
+          this._ngZone.run(() =>
+            this.spiderfy.emit({
+              changedMarkers,
+              unchangedMarkers,
+              spiderfier,
+            })
+          )
+      );
+      spiderfier.addListener(
+        'unspiderfy',
+        (changedMarkers: Marker[], unchangedMarkers: Marker[]) =>
+          this._ngZone.run(() =>
+            this.unspiderfy.emit({
+              changedMarkers,
+              unchangedMarkers,
+              spiderfier,
+            })
+          )
+      );
     });
   }
 }
